@@ -11,7 +11,7 @@ class FileChangeHandler(FileSystemEventHandler):
             if os.path.basename(event.src_path) == "ela-package.id":
                 print(f'File ela-package.id has been modified')
                 with open(event.src_path, 'r') as file:
-                    staging_path = os.environ.get('ELA_STAGING')
+                    staging_path = os.environ.get('ELA_TRIGGER_DIR')
                     print('staging file path inside callback {0}',staging_path)
                     upload_file_id = file.read()
                     if (upload_file_id == None or upload_file_id == ''):
@@ -28,9 +28,14 @@ class FileChangeHandler(FileSystemEventHandler):
     def on_error(self, e):
         print('oops! but soldiering on...{}',e)
 # Set the file path to the current directory
-staging_path = os.environ.get('ELA_STAGING')
+staging_path = os.environ.get('ELA_TRIGGER_DIR')
 file_path = os.path.join(staging_path, "ela-package.id")
 print('staging file path {0}',file_path)
+
+if os.path.exists(staging_path) and os.path.isdir(staging_path):
+    print(f"The directory '{staging_path}' exists.")
+else:
+    print(f"The directory '{staging_path}' does not exist.")
 
 event_handler = FileChangeHandler()
 observer = Observer()
