@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  ela-container:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        UID: ${ELA_HOST_UID}
+        GID: ${ELA_HOST_GID}
+    environment:
+      - ELA_TRIGGER_DIR=${ELA_USER_HOME}/host/files/id
+    volumes:
+      - .:${ELA_USER_HOME}/host
+    container_name: ela-container
+    tty: true
+    stdin_open: true
+    #command: sh -c "${ELA_APP_BASE}/venv/bin/python ${ELA_APP_BASE}/ela/app.py"
+    command: sh -c "${ELA_USER_HOME}/elaenv/bin/python ${ELA_USER_HOME}/host/app.py"
