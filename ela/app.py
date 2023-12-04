@@ -13,6 +13,8 @@ from elautil import eladataclasses as dc, elalogger as logger
 
 appConfig = None
 
+#TODO
+#Test comment to sanity test git integration
 def initializeApp():
     global appConfig
     appConfig = dc.RuntimeConfig()
