@@ -8,18 +8,13 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 #own modules
 import elacore
-from elautil import eladataclasses as dc, elalogger as logger
+from elautil import eladataclasses as dc, elalogger as logger, config as cfg
 
-
-appConfig = None
 
 #TODO
 #Test comment to sanity test git integration
 def initializeApp():
-    global appConfig
-    appConfig = dc.RuntimeConfig()
-    appConfig.set('ELA_LOG_DIR', 'files/log')
-    logger.initialize(appConfig)
+    logger.initialize(cfg)
 
 def isValidTrigger(event):
     if event.is_directory:
