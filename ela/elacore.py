@@ -1,10 +1,10 @@
-from elautil import fileops, db
+from elautil import fileops, db, logger
 from elanlp import nlprocessor
 from elasr import asrecognizer
 
 def initialize():
-    nlprocessor.initialize()
     asrecognizer.initialize()
+    nlprocessor.initialize()
     return
 
 def performAssessment(uploadPkgId):
@@ -14,9 +14,17 @@ def performAssessment(uploadPkgId):
     activityItems = fileops.loadActivityData(packageMetadata)
 
     for item in activityItems:
-        print('Assessing {}'.format(item.username))
+        id = getId(packageMetadata,item)
+        logger.info('Assessing {}'.format(item.username))
         asrresults = asrecognizer.recognize(item)
-
-        nlpresults = nlprocessor.process(asrresults.transcribed_text)
+        nlpresults = nlprocessor.process(item,asrresults.transcribed_text)
 
     return
+
+def getId(metadata, item):
+    id = metadata.schoolpkgid + '|' \
+        + metadata.schoolcode + '|'  \
+        + item.username + '|' + item.lessonid + '|' \
+        + item.assignmentid + '|' + item.attemptnumber
+    return id
+        
