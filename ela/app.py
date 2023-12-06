@@ -73,7 +73,6 @@ def listen():
         logger.info(f'Watching file: {file_full_path}')
         while True:
             time.sleep(5)
-            logger.info(f'Watching file: {file_full_path}')
     except KeyboardInterrupt:
         observer.stop()
     finally:
