@@ -27,9 +27,14 @@ def isValidTrigger(event):
             upload_pkg_id = file.read()
             if (upload_pkg_id == None or upload_pkg_id == ''):
                 return False
+            
+            pkg_upload_dir = config.PKG_UPLOAD_BASE_DIR
+            pkg_dir = os.path.join(pkg_upload_dir,upload_pkg_id)
+            if (os.path.exists(pkg_dir) == False):
+                return False
 
     #TODO
-    #validate file contents i.e. value of string 'upload_pkg_id'
+    #do more validations on input dir..is directory empty or not. does it have the mandatory dirs and files or not.
     #filter out duplicate event triggers for the same watch file modification event
     return True
 
@@ -38,12 +43,15 @@ class FileChangeHandler(FileSystemEventHandler):
     
     def on_modified(self, event):
         logger.debug('File modification detected')
+        upload_pkg_id = ''
         try:
             if (isValidTrigger(event)):
                 with open(event.src_path, 'r') as file:
                     upload_pkg_id = file.read()
-                logger.info('Triggered ELA for package id {}'.format(upload_pkg_id))
-                elacore.performAssessment(upload_pkg_id)
+                    logger.info('Triggered ELA for package id {}'.format(upload_pkg_id))
+                    elacore.performAssessment(upload_pkg_id)
+            else:
+                logger.info(f'Received invalid trigger {upload_pkg_id}. Skipping.')
         except Exception as e:
             traceback_str = traceback.format_exc()
             print(traceback_str)
