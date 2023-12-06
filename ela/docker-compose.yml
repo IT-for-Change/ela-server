@@ -10,6 +10,13 @@ services:
         GID: ${ELA_HOST_GID}
     environment:
       - ELA_TRIGGER_DIR=${ELA_USER_HOME}/host/files/id
+      - ELA_TRIGGER_FILE=ela-package.id
+      - ELA_LOG_DIR=${ELA_USER_HOME}/host/files/log
+      - ELA_LOG_FILE=ela.log
+      - PKG_UPLOAD_BASE_DIR=${ELA_USER_HOME}/host/files/uploads
+      - ELA_ASR_MODEL=${ELA_USER_HOME}/host/models/whisper/small.en.pt
+      - ELA_ASR_INFERENCE_DEVICE=cpu
+      - ELA_NLP_MODEL=en_core_web_trf
     volumes:
       - .:${ELA_USER_HOME}/host
     container_name: ela-container

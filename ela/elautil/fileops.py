@@ -1,28 +1,17 @@
 import os
 import csv
-from elautil import eladataclasses as dc
 import traceback
 import configparser
-
+from elautil import dataclasses as dc, config as cfg
 # Constants
-CSV_REL_DIR = "data"
-AUDIO_REL_DIR = "data/audio"
-PKG_UPLOAD_BASE_DIR = 'files/uploads'
-PKG_META_LOG_DIR = 'log'
+
 
 def initialize():
-    #read all env variables
-    #PKG_UPLOAD_BASE_DIR
-    #ELA_TRIGGER_DIR
-
-    #elafileops initialize
-    #elasr module initialize (model)
-    #elanlp module initialize (model)
     
     return
 
 def file_exists(uploadPkgId, filename):
-    audio_file_path = os.path.join(PKG_UPLOAD_BASE_DIR, uploadPkgId, AUDIO_REL_DIR, filename)
+    audio_file_path = os.path.join(cfg.PKG_UPLOAD_BASE_DIR, uploadPkgId, cfg.PKG_AUDIO_REL_DIR, filename)
     return os.path.exists(audio_file_path)
 
 def loadActivityData(packageMetadata):
@@ -30,7 +19,7 @@ def loadActivityData(packageMetadata):
     uploadPkgId = packageMetadata.schoolpkgid
     print(uploadPkgId)
     csv_file_name = uploadPkgId + '.csv'
-    csv_file_path = os.path.join(PKG_UPLOAD_BASE_DIR, uploadPkgId, CSV_REL_DIR, csv_file_name)
+    csv_file_path = os.path.join(cfg.PKG_UPLOAD_BASE_DIR, uploadPkgId, cfg.PKG_CSV_REL_DIR, csv_file_name)
 
     activityItems = []
 
@@ -42,7 +31,7 @@ def loadActivityData(packageMetadata):
 
                 try:
                     if file_exists(uploadPkgId, filename):
-                        audio_file_path = os.path.join(PKG_UPLOAD_BASE_DIR, uploadPkgId, AUDIO_REL_DIR, filename)
+                        audio_file_path = os.path.join(cfg.PKG_UPLOAD_BASE_DIR, uploadPkgId, cfg.PKG_AUDIO_REL_DIR, filename)
                         item = dc.ActivityItem()
                         item.userid = userid
                         item.username = username
@@ -67,11 +56,11 @@ def loadActivityData(packageMetadata):
 def loadPackageMetaData(uploadPkgId):
 
     packageMetadataFile = uploadPkgId + '.txt'
-    packageMetadataFullFile = os.path.join(PKG_UPLOAD_BASE_DIR, uploadPkgId, PKG_META_LOG_DIR, packageMetadataFile)
+    packageMetadataFullFile = os.path.join(cfg.PKG_UPLOAD_BASE_DIR, uploadPkgId, cfg.PKG_META_LOG_DIR, packageMetadataFile)
     print(packageMetadataFullFile)
-    config = configparser.ConfigParser()
-    config.read(packageMetadataFullFile)
-    metadata = dict(config.items('ECUBE'))
+    parser = configparser.ConfigParser()
+    parser.read(packageMetadataFullFile)
+    metadata = dict(parser.items('ECUBE'))
     schoolCode = ''
     dataCollectedWhen = ''
     if metadata['id'] == uploadPkgId:
