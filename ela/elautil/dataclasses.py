@@ -21,7 +21,7 @@ class ASRResults:
 
 class NLPResults:
     annotated_text = ''
-    grammar_analysys = ''
+    grammar_analysis = ''
 
 class RuntimeConfig:
     config = {}
