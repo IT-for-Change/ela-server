@@ -1,3 +1,4 @@
 import os
 
-ELA_LOG_DIR = os.environ.get('ELA_LOG_DIR')
+#mandatory variables
+ELA_LOG_DIR = os.environ['ELA_LOG_DIR']

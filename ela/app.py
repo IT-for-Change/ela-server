@@ -11,10 +11,9 @@ import elacore
 from elautil import eladataclasses as dc, elalogger as logger, config as cfg
 
 
-#TODO
-#Test comment to sanity test git integration
 def initializeApp():
-    logger.initialize(cfg)
+    logger.initialize()
+    elacore.initialize()
 
 def isValidTrigger(event):
     if event.is_directory:
@@ -71,8 +70,6 @@ observer.schedule(event_handler, path=os.path.dirname(file_path), recursive=Fals
 
 try:
     initializeApp()
-    logger.initialize(appConfig)
-    elacore.initialize(appConfig)
     print(f'Watching file: {file_path}')
     observer.start()
     # Keep the script running
