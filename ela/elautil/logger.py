@@ -2,16 +2,16 @@ import logging
 import os
 import sys
 from pathlib import Path
+from elautil import config
 
-def initialize(appConfig):
+def initialize():
     
-    logDir = 'files/log'
+    logDir = config.ELA_LOG_DIR
+    logfile = os.path.join(config.ELA_LOG_DIR, config.ELA_LOG_FILE)
     if (os.path.exists(logDir) == False):
         Path(logDir).mkdir()
 
-    logfile = 'ela.log'
-    logfilefull = os.path.join(logDir,logfile)
-    print('logging initialized: '.format(logfilefull))
+    print('logging initialized: '.format(logfile))
 
     logging.basicConfig( filename = logfilefull,filemode = 'w',level = logging.DEBUG,format = '%(asctime)s - %(levelname)s: %(message)s',\
                      datefmt = '%d/%m/%Y %I:%M:%S %p' )

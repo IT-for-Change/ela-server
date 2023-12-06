@@ -8,11 +8,12 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 #own modules
 import elacore
-from elautil import eladataclasses as dc, elalogger as logger, config as cfg
+from elautil import dataclasses as dc, logger, config as cfg
 
 
 def initializeApp():
     logger.initialize()
+    db.initialize()
     elacore.initialize()
 
 def isValidTrigger(event):

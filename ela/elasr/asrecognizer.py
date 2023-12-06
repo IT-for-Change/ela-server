@@ -1,4 +1,4 @@
-from elautil import eladataclasses as dc
+from elautil import dataclasses as dc
 
 def initialize():
     return
