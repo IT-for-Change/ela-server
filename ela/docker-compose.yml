@@ -10,6 +10,10 @@ services:
         GID: ${ELA_HOST_GID}
     environment:
       - ELA_TRIGGER_DIR=${ELA_USER_HOME}/host/files/id
+      - ELA_TRIGGER_FILE=ela-package.id
+      - ELA_LOG_DIR=${ELA_USER_HOME}/host/files/log
+      - ELA_LOG_FILE=ela.log
+      - PKG_UPLOAD_BASE_DIR=${ELA_USER_HOME}/host/files/uploads
     volumes:
       - .:${ELA_USER_HOME}/host
     container_name: ela-container
