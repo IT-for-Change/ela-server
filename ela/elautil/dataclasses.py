@@ -15,11 +15,23 @@ class PackageMeta:
     schoolcode = ''
     collectiontime = ''
 
-class ASRResults:
+
+class AssessmentItem:
+    schoolcode = ''
+    pkg_id = ''
+    collectedtime = ''
+    username = ''
+    assignmentid = ''
+    lessonid = ''
+    attempttime = ''
+    asrresult = None
+    nlpresult = None
+
+class ASRResult:
     transcribed_text = ''
     word_timings = ''
 
-class NLPResults:
+class NLPResult:
     annotated_text = ''
     grammar_analysis = ''
 

@@ -17,6 +17,8 @@ services:
       - ELA_ASR_MODEL=${ELA_USER_HOME}/host/files/models/whisper/small.en.pt
       - ELA_ASR_INFERENCE_DEVICE=cpu
       - ELA_NLP_MODEL=en_core_web_trf
+      - ELA_ASSESSMENT_LOCALDB_DIR=${ELA_USER_HOME}/host/files/db
+      - ELA_ASSESSMENT_LOCALDB_NAME=ela-assessment.db
     volumes:
       - .:${ELA_USER_HOME}/host
     container_name: ela-container

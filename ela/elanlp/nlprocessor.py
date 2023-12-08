@@ -25,7 +25,7 @@ def process(item, asr_text):
     annotated_text = annotated_text.strip()
     logger.debug(f'Annotated text : {annotated_text}')
 
-    results = dc.NLPResults()
+    results = dc.NLPResult()
     results.annotated_text = annotated_text
     results.grammar_analysis = ''
     return results

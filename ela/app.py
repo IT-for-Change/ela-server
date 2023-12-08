@@ -14,15 +14,13 @@ from elautil import dataclasses as dc, logger, db, config
 
 def initializeApp():
     logger.initialize()
-    db.initialize()
     elacore.initialize()
 
 def isValidTrigger(event):
     if event.is_directory:
         return False
     if os.path.basename(event.src_path) == config.ELA_TRIGGER_FILE:
-        print('update detected')
-        logger.debug(f'Update to trigger file {event.src_path} detected')
+
         with open(event.src_path, 'r') as file:
             upload_pkg_id = file.read()
             if (upload_pkg_id == None or upload_pkg_id == ''):
@@ -34,16 +32,34 @@ def isValidTrigger(event):
                 return False
 
     #TODO
-    #do more validations on input dir..is directory empty or not. does it have the mandatory dirs and files or not.
+    #do more validations on upload dir..is directory empty or not. does it have the mandatory dirs and files or not.
     #filter out duplicate event triggers for the same watch file modification event
     return True
 
 
 class FileChangeHandler(FileSystemEventHandler):
+
+    def __init__(self):
+        super().__init__()
+        self.last_modified = {}
+    
+    def isDuplicate(self,event):
+        file_path = event.src_path
+        mod_timestamp = os.path.getmtime(file_path)
+        if file_path in self.last_modified and self.last_modified[file_path] == mod_timestamp:
+            logger.debug(f'Ignoring as duplicate')
+            return True
+        
+        self.last_modified[file_path] = mod_timestamp
+        return False
     
     def on_modified(self, event):
-        logger.debug('File modification detected')
+        logger.info(f'Update to trigger file {event.src_path} detected')
         upload_pkg_id = ''
+        
+        if self.isDuplicate(event):
+            return
+
         try:
             if (isValidTrigger(event)):
                 with open(event.src_path, 'r') as file:
