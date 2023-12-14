@@ -34,7 +34,8 @@ def initialize():
         datefmt = '%d/%m/%Y %I:%M:%S %p')
     rotating_file_handler.setFormatter(formatter)
 
-    logging.basicConfig(level=config.ELA_LOG_LEVEL, handlers=[rotating_file_handler])
+    logging.basicConfig(handlers=[rotating_file_handler])
+    logging.getLogger().setLevel(logging.getLevelName(config.ELA_LOG_LEVEL))
 
     stream_handler = logging.StreamHandler(sys.stdout)
     stream_handler.setLevel(logging.INFO) #log info and above to console. debug goes only to file

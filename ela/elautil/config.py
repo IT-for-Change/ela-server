@@ -12,7 +12,7 @@ ELA_LOCALDB_DIR = os.environ['ELA_LOCALDB_DIR']
 ELA_SERVER_TIMEZONE = os.environ['ELA_SERVER_TIMEZONE']
 
 #optional
-ELA_LOG_LEVEL = os.environ.get('LOGLEVEL', 'INFO')
+ELA_LOG_LEVEL = os.environ.get('ELA_LOG_LEVEL', 'INFO')
 
 
 #constants
