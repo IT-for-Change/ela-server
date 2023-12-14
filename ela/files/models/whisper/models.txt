@@ -1,1 +1,8 @@
+1. Download models from openai/whisper: https://github.com/openai/whisper
+2. Presently, the full URLs to the model files are available in whisper/__init__.py
+3. Only the tiny, small and medium English models are required.
+    tiny.en.pt   - for building the base docker image itforchange/ela-server; not required for running the ela-server
+    small.en.pt  - for dev/test on your workstation if you have 8GB or less RAM
+    medium.en.pt - for server deployment.
+4. Specify the model to use for runtime in the docker compose yml
 
