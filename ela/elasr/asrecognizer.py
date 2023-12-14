@@ -30,7 +30,8 @@ def recognize(item):
 
     word_timings = str(all_words)
 
-    results = dc.ASRResult()
-    results.text = asr_text
-    results.word_timings = word_timings
-    return results
+    result = dc.ASRResult()
+    result.transcribed_text = asr_text
+    result.transcribed_text.strip()
+    result.word_timings = word_timings
+    return result

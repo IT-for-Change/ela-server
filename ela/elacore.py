@@ -2,32 +2,49 @@ from elautil import fileops, logger, db, dataclasses as dc
 from elanlp import nlprocessor
 from elasr import asrecognizer
 
-assessmentdb = None
+auditdb = db.ELAAssessmentAuditDatabase()
 
 def initialize():
-    global assessmentdb
     asrecognizer.initialize()
     nlprocessor.initialize()
-    assessmentdb = db.ELAAssessmentDatabase()
     return
 
 def performAssessment(uploadPkgId):
 
-    global assessmentdb
+    global auditdb
 
     packageMetadata = fileops.loadPackageMetaData(uploadPkgId)
+   
+    auditdb.audit(packageMetadata,dc.AuditItemStatus.STARTED)
 
     activityItems = fileops.loadActivityData(packageMetadata)
 
+    assessmentdb = db.ELAAssessmentDatabase(packageMetadata)
+
     for item in activityItems:
+
         id = getId(packageMetadata,item)
+
         logger.info('Assessing {}'.format(item.username))
+
         asrresult = asrecognizer.recognize(item)
+
+        #auditdb.audit(packageMetadata,dc.AuditItemStatus.ASR_COMPLETE)
+
         nlpresult = nlprocessor.process(item,asrresult.transcribed_text)
+
+        #auditdb.audit(packageMetadata,dc.AuditItemStatus.NLP_COMPLETE)
         
         assessment_item = newAssessmentItem(item, packageMetadata, asrresult, nlpresult)
-        assessmentdb.save_assessment(assessment_item)
 
+        assessmentdb.save_assessment(assessment_item)
+    
+    auditdb.audit(packageMetadata,dc.AuditItemStatus.FINISHED)
+    
+    return
+
+def audit(packageMetadata, status):
+    auditdb.audit(packageMetadata.schoolcode,packageMetadata.schoolpkgid,status)
     return
 
 def newAssessmentItem(activity_item, pkg_metadata, asrresult, nlpresult):
@@ -40,7 +57,7 @@ def newAssessmentItem(activity_item, pkg_metadata, asrresult, nlpresult):
     assessmentitem.lessonid = activity_item.lessonid
     assessmentitem.attempttime = activity_item.attempttime
     assessmentitem.asrresult = asrresult
-    assessmentitem.nlpresult = nlpresult    
+    assessmentitem.nlpresult = nlpresult
     return assessmentitem
 
 
