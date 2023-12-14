@@ -1,0 +1,45 @@
+FROM python:3.9
+
+# Update apt and install ffmpeg
+RUN apt-get update && \
+    apt-get install -y ffmpeg
+    
+# Install torch and torchaudio for cpu. Prerequisite for whisper_timestamped
+RUN pip3 install \
+    torch==1.13.1+cpu \
+    torchaudio==0.13.1+cpu \
+    -f https://download.pytorch.org/whl/torch_stable.html
+
+# Install whisper-timestamped from GitHub
+RUN pip3 install git+https://github.com/linto-ai/whisper_timestamped
+
+# Install additional packages for base image
+RUN pip3 install onnxruntime torchaudio ffmpeg
+RUN pip install -U pip setuptools wheel && \
+    pip install -U spacy && \
+    python -m spacy download en_core_web_trf
+
+# Install ELA app.py specific packages    
+
+RUN pip3 install watchdog pytz
+
+#default. To be overridden in docker-compose.yml via env file
+ARG UID=1000
+ARG GID=1000
+ARG ELA_USER_HOME=/home/elauser
+WHISPER_TINY_MODEL_DEMO=tiny.en.pt
+
+# Non-root container user: create a usergroup 'ela' and a user 'elauser'
+# Set the group id and user id to be the same as the non-root host user
+RUN groupadd -r ela && \
+    useradd -r -g ela -m -d $ELA_USER_HOME elauser && \
+    groupmod --gid $GID ela \
+    && usermod --uid $UID elauser
+
+USER elauser
+
+# When VAD (voice activity detection) is enabled, whisper-timestamped downloads https://github.com/snakers4/silero-vad/zipball/master at run-time the first time.
+# We trigger it with a demo execution. Successful execution also validates the spacy nlp installation.
+COPY files/models/whisper/$WHISPER_TINY_MODEL_DEMO $ELA_USER_HOME/demo/
+WORKDIR $ELA_USER_HOME
+RUN cd demo && python demo.py
