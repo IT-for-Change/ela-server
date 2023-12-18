@@ -1,5 +1,17 @@
 from enum import Enum
 
+
+class PackageType(Enum):
+    ECUBE = 0
+    BYRA = 1
+    SIMPLE = 2
+
+class PackageMeta:
+    pkgtype = ''
+    schoolpkgid = ''
+    schoolcode = ''
+    collectiontime = ''
+
 class ActivityItem:
     userid = ''
     username = ''
@@ -10,14 +22,8 @@ class ActivityItem:
     submissionfile = ''
     packagemetadata = None
 
-
-class PackageMeta:
-    schoolpkgid = ''
-    schoolcode = ''
-    collectiontime = ''
-
-
 class AssessmentItem:
+    assessmenttype = ''
     schoolcode = ''
     pkg_id = ''
     collectedtime = ''
@@ -26,6 +32,7 @@ class AssessmentItem:
     lessonid = ''
     attempttime = ''
     attemptnumber = ''
+    recordingfile = ''
     asrresult = None
     nlpresult = None
 
@@ -49,17 +56,3 @@ class ASRResult:
 class NLPResult:
     annotated_text = ''
     grammar_analysis = ''
-
-class RuntimeConfig:
-    config = {}
-    def __init__(self):
-        self.config = {}
-
-    def set(self,name,val):
-        self.config[name] = val
-    
-    def get(self,name):
-        return self.config[name]
-
-    def getAll(self):
-        return self.config.items()

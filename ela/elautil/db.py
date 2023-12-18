@@ -138,10 +138,10 @@ class ELAAssessmentDatabase:
             transcribed_text TEXT NOT NULL,
             word_timings TEXT,
             annotated_text TEXT NOT NULL,
-            grammar_analysis TEXT,
-            PRIMARY KEY (school_code, username, assignmentid, lessonid, attempt_number)
-        );
-        """
+            grammar_analysis TEXT
+            );
+            """
+            #PRIMARY KEY (school_code, username, assignmentid, lessonid, attempt_number)
 
         ddl_index = """
             CREATE INDEX IF NOT EXISTS idx_school_code ON ela_assessment_item_t (school_code);

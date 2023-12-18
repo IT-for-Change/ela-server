@@ -9,11 +9,11 @@ def initialize():
     nlprocessor.initialize()
     return
 
-def performAssessment(uploadPkgId):
+def performAssessment(uploadPkgId, uploadPkgMode):
 
     global auditdb
 
-    packageMetadata = fileops.loadPackageMetaData(uploadPkgId)
+    packageMetadata = fileops.loadPackageMetaData(uploadPkgId, uploadPkgMode)
    
     auditdb.audit(packageMetadata,dc.AuditItemStatus.STARTED)
 
@@ -49,6 +49,7 @@ def audit(packageMetadata, status):
 
 def newAssessmentItem(activity_item, pkg_metadata, asrresult, nlpresult):
     assessmentitem = dc.AssessmentItem()
+    assessmentitem.assessmenttype = pkg_metadata.pkgtype
     assessmentitem.schoolcode = pkg_metadata.schoolcode
     assessmentitem.pkg_id = pkg_metadata.schoolpkgid
     assessmentitem.collectedtime = pkg_metadata.collectiontime
@@ -56,6 +57,7 @@ def newAssessmentItem(activity_item, pkg_metadata, asrresult, nlpresult):
     assessmentitem.assignmentid = activity_item.assignmentid
     assessmentitem.lessonid = activity_item.lessonid
     assessmentitem.attempttime = activity_item.attempttime
+    assessmentitem.recordingfile = activity_item.submissionfile
     assessmentitem.asrresult = asrresult
     assessmentitem.nlpresult = nlpresult
     return assessmentitem
@@ -65,6 +67,7 @@ def getId(metadata, item):
     id = metadata.schoolpkgid + '|' \
         + metadata.schoolcode + '|'  \
         + item.username + '|' + item.lessonid + '|' \
-        + item.assignmentid + '|' + item.attemptnumber
+        + item.assignmentid + '|' + item.attemptnumber + '|' \
+        + item.submissionfile
     return id
         

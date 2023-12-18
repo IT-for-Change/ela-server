@@ -22,13 +22,26 @@ def isValidTrigger(event):
     if os.path.basename(event.src_path) == config.ELA_TRIGGER_FILE:
 
         with open(event.src_path, 'r') as file:
-            upload_pkg_id = file.read()
-            if (upload_pkg_id == None or upload_pkg_id == ''):
+            upload_pkg_infotxt = file.read()
+            if (upload_pkg_infotxt == None or upload_pkg_infotxt == ''):
+                logger.error(f'No content in trigger file')
                 return False
             
+            upload_pkg_info = upload_pkg_infotxt.split('|')
+            if len(upload_pkg_info) != 2:
+                return False
+
+            upload_pkg_id = upload_pkg_info[0]
+            upload_pkg_type = upload_pkg_info[1]
+
+            if (any(pkgtype.name == upload_pkg_type for pkgtype in dc.PackageType) == False):
+                logger.error(f'Invalid package type {upload_pkg_type}')
+                return False
+
             pkg_upload_dir = config.PKG_UPLOAD_BASE_DIR
             pkg_dir = os.path.join(pkg_upload_dir,upload_pkg_id)
             if (os.path.exists(pkg_dir) == False):
+                logger.error(f'Path to package {pkg_dir} does not exist')
                 return False
 
     #TODO
@@ -56,6 +69,7 @@ class FileChangeHandler(FileSystemEventHandler):
     def on_modified(self, event):
         logger.info(f'Update to trigger file {event.src_path} detected')
         upload_pkg_id = ''
+        upload_pkg_infotxt = ''
         
         if self.isDuplicate(event):
             return
@@ -63,11 +77,14 @@ class FileChangeHandler(FileSystemEventHandler):
         try:
             if (isValidTrigger(event)):
                 with open(event.src_path, 'r') as file:
-                    upload_pkg_id = file.read()
-                    logger.info('Triggered ELA for package id {}'.format(upload_pkg_id))
-                    elacore.performAssessment(upload_pkg_id)
+                    upload_pkg_infotxt = file.read()
+                    upload_pkg_info = upload_pkg_infotxt.split('|')
+                    upload_pkg_id = upload_pkg_info[0]
+                    upload_pkg_type = upload_pkg_info[1]
+                    logger.info('Triggered ELA for package id {} and package type {}'.format(upload_pkg_id, upload_pkg_type))
+                    elacore.performAssessment(upload_pkg_id,upload_pkg_type)
             else:
-                logger.info(f'Received invalid trigger {upload_pkg_id}. Skipping.')
+                logger.info(f'Received invalid trigger {upload_pkg_infotxt}. Skipping.')
         except Exception as e:
             traceback_str = traceback.format_exc()
             print(traceback_str)
