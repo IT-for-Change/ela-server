@@ -25,7 +25,7 @@ def performAssessment(uploadPkgId):
 
         id = getId(packageMetadata,item)
 
-        logger.info('Assessing {}'.format(item.username))
+        logger.info('Assessing {}'.format(id))
 
         asrresult = asrecognizer.recognize(item)
 

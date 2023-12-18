@@ -20,7 +20,7 @@ def recognize(item):
     logger.debug(f'Transcribing {audioFile}')
     result = whisper.transcribe(model, audio, beam_size=5, best_of=5, temperature=(0.0, 0.2, 0.4, 0.6, 0.8, 1.0),detect_disfluencies=True, vad=True)
     asr_text = result["text"]
-    asr_text = asr_text.lower()
+    asr_text = asr_text.lower().strip()
     logger.debug(f'Transcribed text: {asr_text}')
 
     all_words = []
@@ -32,6 +32,5 @@ def recognize(item):
 
     result = dc.ASRResult()
     result.transcribed_text = asr_text
-    result.transcribed_text.strip()
     result.word_timings = word_timings
     return result

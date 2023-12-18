@@ -17,7 +17,6 @@ def file_exists(uploadPkgId, filename):
 def loadActivityData(packageMetadata):
 
     uploadPkgId = packageMetadata.schoolpkgid
-    print(uploadPkgId)
     csv_file_name = uploadPkgId + '.csv'
     csv_file_path = os.path.join(cfg.PKG_UPLOAD_BASE_DIR, uploadPkgId, cfg.PKG_CSV_REL_DIR, csv_file_name)
 
@@ -57,7 +56,7 @@ def loadPackageMetaData(uploadPkgId):
 
     packageMetadataFile = uploadPkgId + '.txt'
     packageMetadataFullFile = os.path.join(cfg.PKG_UPLOAD_BASE_DIR, uploadPkgId, cfg.PKG_META_LOG_DIR, packageMetadataFile)
-    print(packageMetadataFullFile)
+    
     parser = configparser.ConfigParser()
     parser.read(packageMetadataFullFile)
     metadata = dict(parser.items('ECUBE'))
